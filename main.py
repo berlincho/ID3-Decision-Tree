@@ -14,12 +14,30 @@ def ID3(KFold):
     for k in range(KFold):
         training_data = []
         testing_data = a[k]
-        for chunk in range(KFold)
+        for chunk in range(KFold):
             if chunk != k:
-                training_data.append(a[chunk])
-        id = 0
+                training_data += a[chunk]
+
         root = DTreeNode(training_data, id)
-        
+        Build_DTree(root)
+
+def Build_DTree(node):
+    current = node
+    if current.isLeaf and not current.isPure:
+        id = current.node_id
+        current.threshold, current.threshold_index = best_info_gain_feature(current)
+        left_data, right_data = split_data(current.data, current.threshold, current.threshold_index)
+        current.left = DTreeNode(left_data, ++id)
+        current.right = DTreeNode(right_data, ++id)
+        current.isLeaf = False
+
+    if len(current.left.data) > 5:
+        Build_DTree(current.left)
+    elif len(current.right.data) > 5:
+        Build_DTree(current.right)
+    else:
+        return None
+
 
 if __name__ == "__main__":
     # KFold value must be greater than 2
