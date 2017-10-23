@@ -1,6 +1,5 @@
 from Node import DTreeNode
 from DecisionTree import *
-import pprint
 
 def chunks(list, n):
     """Yield successive n-sized chunks from list"""
@@ -27,13 +26,15 @@ def Build_DTree(node):
         id = current.node_id
         current.threshold, current.threshold_index = best_info_gain_feature(current)
         left_data, right_data = split_data(current.data, current.threshold, current.threshold_index)
-        current.left = DTreeNode(left_data, ++id)
-        current.right = DTreeNode(right_data, ++id)
+        id += 1
+        current.left = DTreeNode(left_data, id)
+        id += 1
+        current.right = DTreeNode(right_data, id)
         current.isLeaf = False
 
-    if len(current.left.data) > 5:
+    if len(current.left.data) >= 5:
         Build_DTree(current.left)
-    elif len(current.right.data) > 5:
+    elif len(current.right.data) >= 5:
         Build_DTree(current.right)
     else:
         return None
