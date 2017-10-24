@@ -19,13 +19,19 @@ def ID3(KFold):
             if chunk != k:
                 training_data += a[chunk]
 
-        node_id = 1
-        root = DTreeNode(training_data, node_id)
-        Build_DTree(root)
+        DTree_forest = []
+        for d in range(15):
+            training_data_100 = random_pick(training_data)
+            node_id = 1
+            root = DTreeNode(training_data_100, node_id)
+            Build_DTree(root)
 
-        num_pass += validation(root, testing_data)
+            DTree_forest.append(root)
+
+        #num_pass += validation(root, testing_data)
+        num_pass += validation_forest(DTree_forest, testing_data)
     
-    print float(num_pass) / num_data
+    print round(float(num_pass) / num_data, 3)
 
 def Build_DTree(node):
     current = node

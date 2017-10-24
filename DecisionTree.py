@@ -1,6 +1,7 @@
 import random
 import math
 from pprint import pprint
+from random import randint
 
 def normalize(data):
     normal_data = data
@@ -141,3 +142,53 @@ def search_DTree(node,tuple):
         return search_DTree(node.left, tuple)
     else:
         return search_DTree(node.right, tuple)        
+
+def random_pick(data):
+    # Pick 80 entries randomly from 120
+    selected = {}
+    random_data = []
+    while len(random_data) < 100:
+        random_index = randint(0, 119)
+        if selected.has_key(random_index):
+            continue
+        else:
+            selected[random_index]  = random_index
+            random_data.append(data[random_index])
+
+    return random_data
+
+def validation_forest(DTree_forest, testing_data):
+    num_pass = 0
+    num_fail = 0
+    label_index = 4
+
+    for tuple in testing_data:
+        prediction_list = []
+        for i in range(len(DTree_forest)):
+            prediction_list.append(search_DTree(DTree_forest[i], tuple))
+
+        prediction = vote(prediction_list)
+        label = tuple[label_index]
+
+        if prediction == label:
+            num_pass += 1
+        else:
+            num_fail += 1
+    return num_pass
+
+def vote(prediction_list):
+    val_freq = {}
+    for record in prediction_list:
+        if (val_freq.has_key(record)):
+            val_freq[record] += 1
+        else:
+            val_freq[record] = 1
+
+    max = 0
+    major = ""
+    for key in val_freq.keys():
+        if val_freq[key] > max:
+            max = val_freq[key]
+            major = key
+    #print major, max
+    return major
