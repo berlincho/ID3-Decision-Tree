@@ -1,7 +1,7 @@
 import random
 import math
-from pprint import pprint
 from random import randint
+from Node import DTreeNode
 
 def normalize(data):
     normal_data = data
@@ -33,6 +33,26 @@ def read_data(file_name):
     #total = normalize(total)
     total = random.sample(total, len(total))
     return total
+
+def Build_DTree(node):
+    current = node
+    if current.isLeaf and not current.isPure:
+        node_id = current.node_id
+        current.threshold, current.threshold_index = best_info_gain_feature(current)
+        left_data, right_data = split_data(current.data, current.threshold, current.threshold_index)
+        node_id += 1
+        current.left = DTreeNode(left_data, node_id)
+        node_id += 1
+        current.right = DTreeNode(right_data, node_id)
+        current.isLeaf = False
+        #print len(current.left.data), len(current.right.data)
+
+    if not current.left.isPure and len(current.left.data) > 5:
+        Build_DTree(current.left)
+    elif not current.right.isPure and len(current.right.data) > 5:
+        Build_DTree(current.right)
+
+    return None
 
 def split_data(data, threshold, threshold_index):
     index = threshold_index
@@ -143,11 +163,11 @@ def search_DTree(node,tuple):
     else:
         return search_DTree(node.right, tuple)        
 
-def random_pick(data):
+def random_pick(data, num):
     # Pick 80 entries randomly from 120
     selected = {}
     random_data = []
-    while len(random_data) < 100:
+    while len(random_data) < num:
         random_index = randint(0, 119)
         if selected.has_key(random_index):
             continue
@@ -162,6 +182,18 @@ def validation_forest(DTree_forest, testing_data):
     num_fail = 0
     label_index = 4
 
+    label1 = 0
+    label2 = 0
+    label3 = 0
+
+    pass1 = 0
+    pass2 = 0
+    pass3 = 0
+
+    predict1 = 0
+    predict2 = 0
+    predict3 = 0
+
     for tuple in testing_data:
         prediction_list = []
         for i in range(len(DTree_forest)):
@@ -171,10 +203,31 @@ def validation_forest(DTree_forest, testing_data):
         label = tuple[label_index]
 
         if prediction == label:
-            num_pass += 1
+            if prediction == "Iris-virginica":
+                pass1 += 1
+            elif prediction == "Iris-setosa":
+                pass2 += 1
+            elif prediction == "Iris-versicolor":
+                pass3 += 1
         else:
             num_fail += 1
-    return num_pass
+
+        if label == "Iris-virginica":
+            label1 += 1
+        elif label == "Iris-setosa":
+            label2 += 1
+        elif label == "Iris-versicolor":
+            label3 += 1
+
+        if prediction == "Iris-virginica":
+            predict1 += 1
+        elif prediction == "Iris-setosa":
+            predict2 += 1
+        elif prediction == "Iris-versicolor":
+            predict3 += 1
+
+    num_pass = pass1 + pass2 + pass3
+    return num_pass, pass1, pass2, pass3, label1, label2, label3, predict1, predict2, predict3
 
 def vote(prediction_list):
     val_freq = {}
@@ -190,5 +243,5 @@ def vote(prediction_list):
         if val_freq[key] > max:
             max = val_freq[key]
             major = key
-    #print major, max
+
     return major

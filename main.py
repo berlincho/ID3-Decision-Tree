@@ -1,4 +1,3 @@
-from Node import DTreeNode
 from DecisionTree import *
 
 def chunks(list, n):
@@ -12,6 +11,18 @@ def ID3(KFold):
     a = list(chunks(shuffled_data, len(shuffled_data)/KFold))
     num_pass = 0
 
+    label1 = 0
+    label2 = 0
+    label3 = 0
+
+    pass1 = 0
+    pass2 = 0
+    pass3 = 0
+
+    predict1 = 0
+    predict2 = 0
+    predict3 = 0
+
     for k in range(KFold):
         training_data = []
         testing_data = a[k]
@@ -20,39 +31,33 @@ def ID3(KFold):
                 training_data += a[chunk]
 
         DTree_forest = []
-        for d in range(15):
-            training_data_100 = random_pick(training_data)
+        for d in range(20):
+            training_data_80 = random_pick(training_data, 80)
             node_id = 1
-            root = DTreeNode(training_data_100, node_id)
+            root = DTreeNode(training_data_80, node_id)
             Build_DTree(root)
 
             DTree_forest.append(root)
 
         #num_pass += validation(root, testing_data)
-        num_pass += validation_forest(DTree_forest, testing_data)
+        num_pass_, pass1_, pass2_, pass3_, label1_, label2_, label3_, predict1_, predict2_, predict3_ = validation_forest(DTree_forest, testing_data)
+        num_pass += num_pass_
+        pass1 += pass1_
+        pass2 += pass2_
+        pass3 += pass3_
+
+        label1 += label1_
+        label2 += label2_
+        label3 += label3_
+
+        predict1 += predict1_
+        predict2 += predict2_
+        predict3 += predict3_
     
-    print round(float(num_pass) / num_data, 3)
-
-def Build_DTree(node):
-    current = node
-    if current.isLeaf and not current.isPure:
-        node_id = current.node_id
-        current.threshold, current.threshold_index = best_info_gain_feature(current)
-        left_data, right_data = split_data(current.data, current.threshold, current.threshold_index)
-        node_id += 1
-        current.left = DTreeNode(left_data, node_id)
-        node_id += 1
-        current.right = DTreeNode(right_data, node_id)
-        current.isLeaf = False
-        #print len(current.left.data), len(current.right.data)
-
-    if not current.left.isPure and len(current.left.data) > 5:
-        Build_DTree(current.left)
-    elif not current.right.isPure and len(current.right.data) > 5:
-        Build_DTree(current.right)
-
-    return None
-
+    print round(num_pass / float(num_data), 3) 
+    print round(pass1 / float(label1), 3), round(pass1 / float(predict1), 3)
+    print round(pass2 / float(label2), 3), round(pass2 / float(predict2), 3)
+    print round(pass3 / float(label3), 3), round(pass3 / float(predict3), 3)
 
 if __name__ == "__main__":
     # KFold value must be greater than 2
