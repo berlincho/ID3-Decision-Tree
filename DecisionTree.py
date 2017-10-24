@@ -18,7 +18,7 @@ def split_data(data, threshold, threshold_index):
     left = [] 
     right = []
     for tuple in data:
-        if tuple[index] > threshold:
+        if float(tuple[index]) > threshold:
             right.append(tuple)
         else:
             left.append(tuple)
@@ -45,13 +45,14 @@ def calculate_rem(data, feature_index):
     sorted_data = sort_feature(data, feature_index)
     label_index = 4
     check = data[0][label_index]
-    last = data[0][feature_index]
-    best_threshold = data[0][feature_index]
+    last = float(data[0][feature_index])
+    best_threshold = float(data[0][feature_index])
     min_rem = float('inf')
+    rem = float('inf')
 
     for tuple in sorted_data:
         if tuple[label_index] != check:
-            threshold = (tuple[feature_index] + last) / 2
+            threshold = (float(tuple[feature_index]) + last) / 2.0
             left, right = split_data(data, threshold, feature_index)
             rem = (len(left) / len(sorted_data)) * entropy(left) + (len(right) / len(sorted_data)) * entropy(right)
         if rem < min_rem:
@@ -84,8 +85,8 @@ def entropy(data):
 def sort_feature(data, feature_index):
     # Bubble sort
     for i in range(len(data)):
-        for j in range(j+1, len(data)):
-            if data[j][feature_index] < data[i][feature_index]:
+        for j in range(i+1, len(data)):
+            if float(data[j][feature_index]) < float(data[i][feature_index]):
                 data[j], data[i] = data[i], data[j]
     
     return data

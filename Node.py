@@ -1,8 +1,8 @@
 # Node class template
 class DTreeNode:
-    def __init__(self, data, id):
+    def __init__(self, data, node_id):
         self.data = data
-        self.node_id = id
+        self.node_id = node_id
         self.left = None
         self.right = None
         self.threshold = -1
@@ -12,7 +12,7 @@ class DTreeNode:
 
     def majority_value(self, data):
         if len(data) == 0:
-            return None
+            print "fuck"
 
         valFreq = {}
         label_index = 4
