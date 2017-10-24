@@ -25,7 +25,7 @@ def ID3(KFold):
 
         num_pass += validation(root, testing_data)
     
-    print float(num_pass) / num_data * 100
+    print float(num_pass) / num_data
 
 def Build_DTree(node):
     current = node

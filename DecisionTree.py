@@ -2,6 +2,24 @@ import random
 import math
 from pprint import pprint
 
+def normalize(data):
+    normal_data = data
+    num_feature = 4
+
+    for i in range(num_feature): 
+        sorted_data = sort_feature(data, i)
+        max = float(sorted_data[0][i])
+        min = float(sorted_data[149][i])
+
+        tmp = 0
+        for tuple in sorted_data:
+            normal = (float(tuple[i]) - min) / (max - min)
+            #print normal
+            normal_data[tmp][i] = normal
+            tmp += 1
+
+    return normal_data
+
 def read_data(file_name):
     data = open(file_name, "r")
     total = []
@@ -11,6 +29,7 @@ def read_data(file_name):
         if len(one) == 5:
             total.append(one)
 
+    #total = normalize(total)
     total = random.sample(total, len(total))
     return total
 
