@@ -90,3 +90,28 @@ def sort_feature(data, feature_index):
                 data[j], data[i] = data[i], data[j]
     
     return data
+
+def validation(node, testing_data):
+    num_pass = 0
+    num_fail = 0
+    label_index = 4
+    for tuple in testing_data:
+        prediction = search_DTree(node, tuple)
+        label = tuple[label_index]
+
+        if prediction == label:
+            num_pass += 1
+        else:
+            num_fail += 1
+
+    accuracy = num_pass  / float(len(testing_data))
+    print accuracy
+
+
+def search_DTree(node,tuple):
+    if node.isLeaf:
+        return node.label
+    if float(tuple[node.threshold_index]) < float(node.threshold):
+        return search_DTree(node.left, tuple)
+    else:
+        return search_DTree(node.right, tuple)        

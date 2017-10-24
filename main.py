@@ -21,7 +21,7 @@ def ID3(KFold):
         root = DTreeNode(training_data, node_id)
         Build_DTree(root)
 
-        validate(root, testing_data)
+        validation(root, testing_data)
 
 def Build_DTree(node):
     current = node
@@ -35,9 +35,9 @@ def Build_DTree(node):
         current.right = DTreeNode(right_data, node_id)
         current.isLeaf = False
 
-    if not current.left.isPure and len(current.left.data) >= 10:
+    if not current.left.isPure and len(current.left.data) > 10:
         Build_DTree(current.left)
-    elif not current.right.isPure and len(current.right.data) >= 10:
+    elif not current.right.isPure and len(current.right.data) > 10:
         Build_DTree(current.right)
     else:
         return None
