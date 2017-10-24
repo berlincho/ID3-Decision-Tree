@@ -1,5 +1,6 @@
 import random
 import math
+from pprint import pprint
 
 def read_data(file_name):
     data = open(file_name, "r")
@@ -38,27 +39,35 @@ def best_info_gain_feature(node):
             min_rem = rem
             best_threshold = threshold
             best_threshold_index = i
+        #print rem, threshold
     
+    #print best_threshold, best_threshold_index
     return best_threshold, best_threshold_index
 
 def calculate_rem(data, feature_index):
     sorted_data = sort_feature(data, feature_index)
     label_index = 4
-    check = data[0][label_index]
-    last = float(data[0][feature_index])
-    best_threshold = float(data[0][feature_index])
+    check = sorted_data[0][label_index]
+    last = float(sorted_data[0][feature_index])
+    best_threshold = float(sorted_data[0][feature_index])
     min_rem = float('inf')
     rem = float('inf')
+
+    #if len(sorted_data) == 120 and feature_index ==0:
+    #    pprint(sorted_data)
+    #    print check, last
 
     for tuple in sorted_data:
         if tuple[label_index] != check:
             threshold = (float(tuple[feature_index]) + last) / 2.0
-            left, right = split_data(data, threshold, feature_index)
-            rem = (len(left) / len(sorted_data)) * entropy(left) + (len(right) / len(sorted_data)) * entropy(right)
+            left, right = split_data(sorted_data, threshold, feature_index)
+            rem = float(len(left)) / len(sorted_data) * entropy(left) + (float(len(right)) / len(sorted_data)) * entropy(right)
+            check = tuple[label_index]
+
         if rem < min_rem:
             min_rem = rem
             best_threshold = threshold
-
+        last = float(tuple[feature_index])
     return min_rem, best_threshold  
 
 def entropy(data):
@@ -79,16 +88,15 @@ def entropy(data):
     # Calculate the entropy of the data for the target attribute
     for freq in val_freq.values():
         data_entropy += (-freq/len(data)) * math.log(freq/len(data), 2) 
-        
     return data_entropy
 
 def sort_feature(data, feature_index):
     # Bubble sort
     for i in range(len(data)):
         for j in range(i+1, len(data)):
-            if float(data[j][feature_index]) < float(data[i][feature_index]):
+            if float(data[j][feature_index]) > float(data[i][feature_index]):
                 data[j], data[i] = data[i], data[j]
-    
+
     return data
 
 def validation(node, testing_data):
@@ -104,8 +112,7 @@ def validation(node, testing_data):
         else:
             num_fail += 1
 
-    accuracy = num_pass  / float(len(testing_data))
-    print accuracy
+    return num_pass
 
 
 def search_DTree(node,tuple):

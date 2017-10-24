@@ -8,7 +8,9 @@ def chunks(list, n):
 
 def ID3(KFold):
     shuffled_data = read_data("./iris.data.txt")
+    num_data = len(shuffled_data)
     a = list(chunks(shuffled_data, len(shuffled_data)/KFold))
+    num_pass = 0
 
     for k in range(KFold):
         training_data = []
@@ -21,7 +23,9 @@ def ID3(KFold):
         root = DTreeNode(training_data, node_id)
         Build_DTree(root)
 
-        validation(root, testing_data)
+        num_pass += validation(root, testing_data)
+    
+    print float(num_pass) / num_data * 100
 
 def Build_DTree(node):
     current = node
@@ -34,13 +38,14 @@ def Build_DTree(node):
         node_id += 1
         current.right = DTreeNode(right_data, node_id)
         current.isLeaf = False
+        #print len(current.left.data), len(current.right.data)
 
-    if not current.left.isPure and len(current.left.data) > 10:
+    if not current.left.isPure and len(current.left.data) > 5:
         Build_DTree(current.left)
-    elif not current.right.isPure and len(current.right.data) > 10:
+    elif not current.right.isPure and len(current.right.data) > 5:
         Build_DTree(current.right)
-    else:
-        return None
+
+    return None
 
 
 if __name__ == "__main__":
