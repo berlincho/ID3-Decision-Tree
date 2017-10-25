@@ -1,6 +1,5 @@
-import random
 import math
-from random import randint
+from random import *
 from Node import DTreeNode
 
 def normalize(data):
@@ -31,7 +30,7 @@ def read_data(file_name):
             total.append(one)
 
     #total = normalize(total)
-    total = random.sample(total, len(total))
+    total = sample(total, len(total))
     return total
 
 def Build_DTree(node):
@@ -143,16 +142,49 @@ def validation(node, testing_data):
     num_pass = 0
     num_fail = 0
     label_index = 4
+
+    label1 = 0
+    label2 = 0
+    label3 = 0
+
+    pass1 = 0
+    pass2 = 0
+    pass3 = 0
+
+    predict1 = 0
+    predict2 = 0
+    predict3 = 0
+
     for tuple in testing_data:
         prediction = search_DTree(node, tuple)
         label = tuple[label_index]
 
         if prediction == label:
-            num_pass += 1
+            if prediction == "Iris-virginica":
+                pass1 += 1
+            elif prediction == "Iris-setosa":
+                pass2 += 1
+            elif prediction == "Iris-versicolor":
+                pass3 += 1
         else:
             num_fail += 1
+        
+        if label == "Iris-virginica":
+            label1 += 1
+        elif label == "Iris-setosa":
+            label2 += 1
+        elif label == "Iris-versicolor":
+            label3 += 1
 
-    return num_pass
+        if prediction == "Iris-virginica":
+            predict1 += 1
+        elif prediction == "Iris-setosa":
+            predict2 += 1
+        elif prediction == "Iris-versicolor":
+            predict3 += 1
+
+    num_pass = pass1 + pass2 + pass3
+    return num_pass, pass1, pass2, pass3, label1, label2, label3, predict1, predict2, predict3
 
 
 def search_DTree(node,tuple):
