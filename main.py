@@ -1,5 +1,6 @@
+import sys 
+sys.path.append("./lib/")
 from DecisionTree import *
-import sys
 
 def chunks(list, n):
     """Yield successive n-sized chunks from list"""
