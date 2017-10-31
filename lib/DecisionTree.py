@@ -66,16 +66,16 @@ def split_data(data, threshold, threshold_index):
     return left, right
 
 def best_info_gain_feature(node):
-    min_rem = float('inf')
+    max_info_gain = float('-inf')
     best_threshold = -1
     best_threshold_index = -1
     num_feature = 4
 
     # Get min rem as max info. gain
     for i in range(num_feature):
-        rem, threshold = calculate_rem(node.data, i)
-        if rem < min_rem:
-            min_rem = rem
+        info_gain, threshold = calculate_info_gain(node.data, i)
+        if info_gain > max_info_gain:
+            max_info_gain = info_gain
             best_threshold = threshold
             best_threshold_index = i
         #print rem, threshold
@@ -83,7 +83,7 @@ def best_info_gain_feature(node):
     #print best_threshold, best_threshold_index
     return best_threshold, best_threshold_index
 
-def calculate_rem(data, feature_index):
+def calculate_info_gain(data, feature_index):
     sorted_data = sort_feature(data, feature_index)
     label_index = 4
     check = sorted_data[0][label_index]
@@ -107,7 +107,8 @@ def calculate_rem(data, feature_index):
             min_rem = rem
             best_threshold = threshold
         last = float(tuple[feature_index])
-    return min_rem, best_threshold  
+    info_gain = entropy(data) - min_rem
+    return info_gain, best_threshold  
 
 def entropy(data):
     """
